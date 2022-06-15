@@ -1,0 +1,32 @@
+org: btcs
+app: btc-studio
+service: api
+plugins:
+    - serverless-dotenv-plugin
+    - serverless-ignore
+provider:
+    name: aws
+    runtime: nodejs14.x
+    stage: ${env:SERVERLESS_STAGE}
+    region: ap-southeast-1
+    memorySize: 384
+    timeout: 120
+functions:
+    app:
+        name: btc-studio-${env:SERVERLESS_STAGE}
+        handler: src/serverless.handler
+        events:
+            - http:
+                  path: /
+                  method: ANY
+                  cors: true
+            - http:
+                  path: /{proxy+}
+                  method: ANY
+                  cors: true
+        vpc:
+            securityGroupIds:
+                - sg-01c5b0d7a8314bd4e
+            subnetIds:
+                - subnet-05979b6b352a4b4cb
+                - subnet-08660cc75335ab4ae
