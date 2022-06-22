@@ -1,8 +1,8 @@
-const uon = require("./uon");
+const Btcs = require("./btcs");
 const app = require("./app");
 
 const APP_PORT = process.env.APP_PORT || 3000;
-const logger = uon.logger;
+const logger = Btcs.logger;
 
 app.listen(APP_PORT, function () {
     logger.info(

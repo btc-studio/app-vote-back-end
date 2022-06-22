@@ -1,4 +1,4 @@
-const Uon = require("./uon.js");
+const Btcs = require("./btcs.js");
 
 const express = require("express");
 require("express-async-errors");
@@ -8,12 +8,14 @@ const expressPino = require("express-pino-logger");
 const cors = require("cors");
 const routes = require("./routes");
 
-const logger = Uon.logger;
+const logger = Btcs.logger;
 var path = require("path");
 
 const app = express();
 
 const expressLogger = expressPino({ logger });
+
+Btcs.connect(); // Connect to DB
 
 const corsOptions = {
     origin: true,
@@ -22,14 +24,14 @@ const corsOptions = {
 
 // Detect terminate events
 process.on("SIGTERM", function () {
-    logger.info("[uon][app] Receive SIGTERM!");
-    Uon.sequelize.close();
+    logger.info("[btcs][app] Receive SIGTERM!");
+    Btcs.sequelize.close();
     process.exit(0);
 });
 
 process.on("SIGINT", function () {
-    logger.info("[uon][app] Receive SIGINT!");
-    Uon.sequelize.close();
+    logger.info("[btcs][app] Receive SIGINT!");
+    Btcs.sequelize.close();
     process.exit(0);
 });
 
