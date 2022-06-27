@@ -113,6 +113,6 @@ dist
 package-lock.json
 
 #ignore yarn.lock filr
-# yarn.lock
+yarn.lock
 src/public/
 
