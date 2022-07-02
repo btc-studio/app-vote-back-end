@@ -1,8 +1,8 @@
-const { users } = require("../models/user.model");
+const { Users } = require("../models/user.model");
 
-exports.findUserById = async (user_id) => {
+exports.findUserById = async (id) => {
     try {
-        const user = internalFindUser(user_id);
+        const user = await internalFindUser(id);
         return user;
     } catch (error) {
         return error;
@@ -11,7 +11,7 @@ exports.findUserById = async (user_id) => {
 
 exports.findAllUsers = async () => {
     try {
-        const users = await users.findAll();
+        const users = await Users.findAll();
         return users;
     } catch (error) {
         return error;
@@ -20,12 +20,13 @@ exports.findAllUsers = async () => {
 
 exports.createNewUser = async (user_req) => {
     try {
-        const user = await users.create({
+        const user = await Users.create({
+            id: user_req.id,
             name: user_req.name,
             email: user_req.email,
             role: user_req.role,
             created_at: new Date(),
-            update_at: new Date(),
+            updated_at: new Date(),
         });
         return user;
     } catch (error) {
@@ -35,14 +36,14 @@ exports.createNewUser = async (user_req) => {
 
 exports.updateUser = async (user_req) => {
     try {
-        const user = internalFindUser(user_id);
+        const user = await internalFindUser(user_req.id);
         if (user === null) {
         } else {
-            user.name = user_req.name ? null : user.name;
-            user.email = user_req.email ? null : user.email;
-            user.role = user_req.role ? null : user.role;
-            user.update_at = new Date();
-            await users.save();
+            user.name = user_req.name == null ? user.name : user_req.name;
+            user.email = user_req.email == null ? user.email : user_req.email;
+            user.role = user_req.role == null ? user.role : user_req.role;
+            user.updated_at = new Date();
+            await user.save();
         }
         return user;
     } catch (error) {
@@ -50,11 +51,11 @@ exports.updateUser = async (user_req) => {
     }
 };
 
-exports.deleteUser = async (user_id) => {
+exports.deleteUser = async (id) => {
     try {
-        const user = await users.destroy({
+        const user = await Users.destroy({
             where: {
-                id: user_id,
+                id: id,
             },
         });
         return user;
@@ -63,10 +64,10 @@ exports.deleteUser = async (user_id) => {
     }
 };
 
-internalFindUser = async (user_id) => {
-    const user = await users.findOne({
+internalFindUser = async (id) => {
+    const user = await Users.findOne({
         where: {
-            id: user_id,
+            id: id,
         },
     });
     return user;

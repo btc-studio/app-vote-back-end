@@ -9,8 +9,8 @@ const {
 
 exports.getUserById = async (req, res) => {
     try {
-        const user_id = req.params.user_id;
-        const user = await findUserById(user_id);
+        const id = req.params.id;
+        const user = await findUserById(id);
 
         res.status(200).json({
             success: true,
@@ -21,7 +21,7 @@ exports.getUserById = async (req, res) => {
     } catch (error) {
         logger.error(
             { err: error },
-            `[uon][controllers/api/getClassById] Error:`
+            `[btcs][controllers/api/getClassById] Error:`
         );
         res.status(500).json({
             success: false,
@@ -33,7 +33,7 @@ exports.getUserById = async (req, res) => {
 };
 
 exports.getAllUsers = async (req, res) => {
-    logger.info(req.params, `[uon][controllers/api/getAllUsers] Request:`);
+    logger.info(req.params, `[btcs][controllers/api/getAllUsers] Request:`);
     try {
         const users = await findAllUsers();
         console.log("users: ", users);
@@ -46,7 +46,7 @@ exports.getAllUsers = async (req, res) => {
     } catch (error) {
         logger.error(
             { err: error },
-            `[uon][controllers/api/getAllUsers] Error:`
+            `[btcs][controllers/api/getAllUsers] Error:`
         );
         res.status(500).json({
             success: false,
@@ -60,10 +60,10 @@ exports.getAllUsers = async (req, res) => {
 exports.createNewUser = async (req, res) => {
     try {
         const user_req = {
-            user_id: req.params.user_id,
-            name: req.params.name,
-            email: req.params.email,
-            role: req.params.role,
+            id: req.body.id,
+            name: req.body.name,
+            email: req.body.email,
+            role: req.body.role,
         };
 
         const user = await createNewUser(user_req);
@@ -77,7 +77,7 @@ exports.createNewUser = async (req, res) => {
     } catch (error) {
         logger.error(
             { err: error },
-            `[uon][controllers/api/createNewUser] Error:`
+            `[btcs][controllers/api/createNewUser] Error:`
         );
         res.status(500).json({
             success: false,
@@ -91,10 +91,10 @@ exports.createNewUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         const user_req = {
-            user_id: req.params.user_id,
-            name: req.params.name,
-            email: req.params.email,
-            role: req.params.role,
+            id: req.body.id,
+            name: req.body.name,
+            email: req.body.email,
+            role: req.body.role,
         };
         const user = await updateUser(user_req);
 
@@ -116,7 +116,7 @@ exports.updateUser = async (req, res) => {
     } catch (error) {
         logger.error(
             { err: error },
-            `[uon][controllers/api/getAllUsers] Error:`
+            `[btcs][controllers/api/getAllUsers] Error:`
         );
         res.status(500).json({
             success: false,
@@ -129,8 +129,8 @@ exports.updateUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     try {
-        const user_id = req.params.user_id;
-        const user = await deleteUser(user_id);
+        const id = req.params.id;
+        const user = await deleteUser(id);
 
         res.status(200).json({
             success: true,
@@ -141,7 +141,7 @@ exports.deleteUser = async (req, res) => {
     } catch (error) {
         logger.error(
             { err: error },
-            `[uon][controllers/api/deleteUser] Error:`
+            `[btcs][controllers/api/deleteUser] Error:`
         );
         res.status(500).json({
             success: false,

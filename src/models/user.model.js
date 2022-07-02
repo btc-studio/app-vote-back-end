@@ -2,9 +2,9 @@ const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../commons/database/database").sequelize;
 const { TABLE_NAME } = require("../commons/constants/table_names");
 
-class users extends Model {}
+class Users extends Model {}
 
-users.init(
+Users.init(
     {
         id: {
             type: DataTypes.INTEGER(11),
@@ -46,4 +46,4 @@ users.init(
     }
 );
 
-module.exports = { users };
+module.exports = { Users };

@@ -104,15 +104,15 @@ dist
 .tern-port
 
 #ignore .env file
-.env
-.env.local
-.env.development
-.env.production
+# .env
+# .env.local
+# .env.development
+# .env.production
 
 #ignore package-lock.json
 package-lock.json
 
 #ignore yarn.lock filr
-yarn.lock
+# yarn.lock
 src/public/
 
