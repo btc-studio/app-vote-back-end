@@ -1,14 +1,7 @@
 const Btcs = require("../btcs.js");
-const {
-    check,
-    checkSchema,
-    body,
-    validationResult,
-} = require("express-validator");
-const axios = require("axios");
-const dotenv = require("dotenv-flow");
+const database = require("../commons/database/database");
 
-const Sequelize = Btcs.sequelize;
+const Sequelize = database.sequelize;
 const QueryTypes = Sequelize.QueryTypes;
 
 const logger = Btcs.logger;
