@@ -59,6 +59,8 @@ exports.getAllUsers = async (req, res) => {
 
 exports.createNewUser = async (req, res) => {
     try {
+        // TODO: Validate data request
+
         const user_req = {
             id: req.body.id,
             name: req.body.name,
@@ -90,6 +92,8 @@ exports.createNewUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     try {
+        // TODO: Validate data request
+
         const user_req = {
             id: req.body.id,
             name: req.body.name,
