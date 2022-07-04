@@ -9,6 +9,7 @@ const expressPino = require("express-pino-logger");
 const cors = require("cors");
 const routes = require("./routes");
 const user_routes = require("./routes/users.routes");
+const criteria_routes = require("./routes/criterias.routes");
 
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
@@ -72,7 +73,8 @@ app.disable("x-powered-by")
     .use(cors(corsOptions))
     .use("/", routes);
 
-app.use("/", user_routes);
+// Import routes
+app.use("/", user_routes).use("/", criteria_routes);
 
 app.get("/", function (req, res) {
     res.send("Welcome to BTC Studio Back-end Api v1.0.0");
