@@ -1,4 +1,5 @@
 const { Criterias } = require("../models/criteria.model");
+const sequelize = require("../commons/database/database").sequelize;
 
 exports.findCriteriaById = async (id) => {
     try {
@@ -19,6 +20,7 @@ exports.findAllCriterias = async () => {
 };
 
 exports.createNewCriteria = async (criteria_req) => {
+    const t = await sequelize.transaction();
     try {
         const criteria = await Criterias.create({
             id: criteria_req.id,
@@ -27,13 +29,16 @@ exports.createNewCriteria = async (criteria_req) => {
             created_at: new Date(),
             updated_at: new Date(),
         });
+        await t.commit();
         return criteria;
     } catch (error) {
+        await t.rollback();
         return error;
     }
 };
 
 exports.updateCriteria = async (criteria_req) => {
+    const t = await sequelize.transaction();
     try {
         const criteria = await internalFindCriteria(criteria_req.id);
         if (criteria === null) {
@@ -45,21 +50,26 @@ exports.updateCriteria = async (criteria_req) => {
             criteria.updated_at = new Date();
             await criteria.save();
         }
+        await t.commit();
         return criteria;
     } catch (error) {
+        await t.rollback();
         return error;
     }
 };
 
 exports.deleteCriteria = async (id) => {
+    const t = await sequelize.transaction();
     try {
         const criteria = await Criterias.destroy({
             where: {
                 id: id,
             },
         });
+        await t.commit();
         return criteria;
     } catch (error) {
+        await t.rollback();
         return error;
     }
 };
