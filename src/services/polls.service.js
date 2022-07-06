@@ -1,7 +1,11 @@
 const { Polls } = require("../models/poll.model");
-const { PollOptions } = require("../models/poll_option.model");
 const { PollCriterias } = require("../models/poll_criteria.model");
-const { createNewPollCriteria } = require("../services/poll_criterias.service");
+const {
+    createBulkPollCriterias,
+    vote,
+} = require("../services/poll_criterias.service");
+const { findUserOptionById } = require("../services/user_options.service");
+
 const sequelize = require("../commons/database/database").sequelize;
 
 exports.findPollById = async (id) => {
@@ -29,6 +33,8 @@ exports.createNewPoll = async (poll_req) => {
         // insert to polls table
         const poll = await Polls.create({
             id: poll_req.id,
+            option_id: poll_req.option_id,
+            criteria_ids: poll_req.criteria_ids,
             title: poll_req.title,
             description: poll_req.description,
             created_by: poll_req.created_by,
@@ -38,21 +44,22 @@ exports.createNewPoll = async (poll_req) => {
             updated_at: new Date(),
         });
 
-        // insert to polls poll_criterias table
+        const user_options = await findUserOptionById(poll_req.option_id);
+        const values = new Array();
+        // Insert to polls poll_criterias table
         poll_req.criteria_ids.forEach((criteria_id) => {
-            createNewPollCriteria({
-                criteria_id: criteria_id,
-                option_id: poll_req.id,
-                user_id: null,
-                total_vote: 0,
+            user_options.forEach((user_option) => {
+                const json = new Object();
+                json.criteria_id = criteria_id;
+                json.poll_id = poll_req.id;
+                json.user_id = user_option.user_id;
+                json.total_vote = 0;
+
+                values.push(json);
             });
         });
+        await createBulkPollCriterias(values);
 
-        // insert to polls poll_options table
-        const poll_option = await PollOptions.create({
-            option_id: poll_req.option_id,
-            poll_id: poll_req.id,
-        });
         await t.commit();
         return poll;
     } catch (error) {
@@ -115,17 +122,7 @@ internalFindPoll = async (id) => {
 exports.vote = async (vote_req) => {
     const t = await sequelize.transaction();
     try {
-        const poll_criteria = await PollCriterias.findOne({
-            where: {
-                criteria_id: vote_req.criteria_id,
-                poll_id: vote_req.poll_id,
-                user_id: vote_req.user_id,
-            },
-        });
-        // Add +1 Vote for user
-        poll_criteria.total_vote += 1;
-        await poll_criteria.save();
-        await t.commit();
+        const poll_criteria = await vote(vote_req);
         return poll_criteria;
     } catch (error) {
         await t.rollback();
@@ -139,10 +136,7 @@ exports.getResult = async (result_req) => {
             where: {
                 poll_id: result_req.poll_id,
             },
-            order: 
-            [ 
-                "total_vote", 'DESC',
-            ],
+            order: ["total_vote", "DESC"],
             limit: 3,
         });
         return poll_criterias;

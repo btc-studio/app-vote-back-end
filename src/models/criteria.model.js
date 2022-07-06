@@ -7,7 +7,7 @@ class Criterias extends Model {}
 Criterias.init(
     {
         id: {
-            type: DataTypes.INTEGER(11),
+            type: DataTypes.INTEGER,
             primaryKey: true,
         },
 
@@ -17,7 +17,7 @@ Criterias.init(
         },
 
         created_by: {
-            type: DataTypes.INTEGER(11),
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         created_at: {

@@ -1,6 +1,7 @@
 const { Options } = require("../models/option.model");
 const { UserOptions } = require("../models/user_option.model");
 const sequelize = require("../commons/database/database").sequelize;
+const { createBuldUserOptions } = require("../services/user_options.service");
 
 exports.findOptionById = async (id) => {
     try {
@@ -34,14 +35,17 @@ exports.createNewOption = async (option_req) => {
             updated_at: new Date(),
         });
 
-         // insert to options option_criterias table
+        const values = new Array();
+        // insert to user options table
         option_req.user_ids.forEach((user_id) => {
-            const user_option = await UserOptions.create({
-                user_id: user_id,
-                option_id: option_req.id,
-            });
+            const json = new Object();
+            json.user_id = user_id;
+            json.option_id = option_req.id;
+
+            values.push(json);
         });
-        
+        await createBuldUserOptions(values);
+
         await t.commit();
         return option;
     } catch (error) {
@@ -56,13 +60,16 @@ exports.updateOption = async (option_req) => {
         const option = await internalFindOption(option_req.id);
         if (option === null) {
         } else {
-            option.title = option_req.title == null ? option.title : option_req.title;
+            option.title =
+                option_req.title == null ? option.title : option_req.title;
             option.description =
                 option_req.description == null
                     ? option.description
                     : option_req.description;
             option.start_at =
-                option_req.start_at == null ? option.start_at : option_req.start_at;
+                option_req.start_at == null
+                    ? option.start_at
+                    : option_req.start_at;
             option.end_at =
                 option_req.end_at == null ? option.end_at : option_req.end_at;
             option.updated_at = new Date();

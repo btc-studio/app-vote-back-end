@@ -4,8 +4,6 @@ exports.TABLE_NAME = {
     criterias: "criterias",
     polls: "polls",
     poll_criterias: "poll_criterias",
-    results: "results",
     options: "options",
-    poll_options: "poll_options",
     user_options: "user_options",
 };

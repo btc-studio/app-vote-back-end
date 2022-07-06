@@ -7,7 +7,7 @@ class UserWallets extends Model {}
 UserWallets.init(
     {
         user_id: {
-            type: DataTypes.INTEGER(11),
+            type: DataTypes.INTEGER,
             primaryKey: true,
         },
 
