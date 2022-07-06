@@ -53,7 +53,6 @@ exports.createNewPoll = async (poll_req) => {
             option_id: poll_req.option_id,
             poll_id: poll_req.id,
         });
-
         await t.commit();
         return poll;
     } catch (error) {
@@ -140,7 +139,10 @@ exports.getResult = async (result_req) => {
             where: {
                 poll_id: result_req.poll_id,
             },
-            order: ["total_vote", "DESC"],
+            order: 
+            [ 
+                "total_vote", 'DESC',
+            ],
             limit: 3,
         });
         return poll_criterias;
