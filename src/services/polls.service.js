@@ -38,7 +38,7 @@ exports.createNewPoll = async (poll_req) => {
             updated_at: new Date(),
         });
 
-        // insert to polls poll_criterias table
+         // insert to polls poll_criterias table
         poll_req.criteria_ids.forEach((criteria_id) => {
             createNewPollCriteria({
                 criteria_id: criteria_id,
@@ -53,7 +53,6 @@ exports.createNewPoll = async (poll_req) => {
             option_id: poll_req.option_id,
             poll_id: poll_req.id,
         });
-
         await t.commit();
         return poll;
     } catch (error) {
@@ -141,7 +140,10 @@ exports.getResult = async (result_req) => {
                 poll_id: result_req.poll_id,
                 user_id: result_req.user_id,
             },
-            order: ["total_vote", "DESC"],
+            order: 
+            [ 
+                "total_vote", 'DESC',
+            ],
             limit: 3,
         });
         return poll_criterias;
