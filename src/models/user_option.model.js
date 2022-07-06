@@ -13,12 +13,12 @@ UserOptions.init(
 
         option_id: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            primaryKey: true,
         },
     },
     {
         sequelize,
-        tableName: TABLE_NAME.options,
+        tableName: TABLE_NAME.user_options,
 
         // If don't want createdAt, updatedAt
         createdAt: false,

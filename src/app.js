@@ -11,6 +11,8 @@ const routes = require("./routes");
 const user_routes = require("./routes/users.routes");
 const criteria_routes = require("./routes/criterias.routes");
 const poll_routes = require("./routes/polls.routes");
+const options_routes = require("./routes/options.routes");
+const user_options_routes = require("./routes/user_options.routes");
 
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
@@ -71,11 +73,15 @@ app.disable("x-powered-by")
     .use(expressLogger)
     .use(bodyParser.urlencoded({ extended: true }))
     .use(bodyParser.json({ limit: "5mb" }))
-    .use(cors(corsOptions))
-    .use("/", routes);
+    .use(cors(corsOptions));
 
 // Import routes
-app.use("/", user_routes).use("/", criteria_routes).use("/", poll_routes);
+app.use("/", routes)
+    .use("/", user_routes)
+    .use("/", criteria_routes)
+    .use("/", poll_routes)
+    .use("/", options_routes)
+    .use("/", user_options_routes);
 
 app.get("/", function (req, res) {
     res.send("Welcome to BTC Studio Back-end Api v1.0.0");

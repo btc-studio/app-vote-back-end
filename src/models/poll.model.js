@@ -11,6 +11,11 @@ Polls.init(
             primaryKey: true,
         },
 
+        option_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+
         title: {
             type: DataTypes.TEXT,
             allowNull: false,
@@ -32,7 +37,7 @@ Polls.init(
         },
 
         created_by: {
-            type: DataTypes.INTEGER(11),
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
 

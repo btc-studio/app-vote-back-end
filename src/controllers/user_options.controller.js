@@ -1,27 +1,27 @@
 const logger = require("../btcs").logger;
 const {
-    findOptionById,
-    findAllOptions,
-    createNewOption,
-    updateOption,
-    deleteOption,
-} = require("../services/options.service");
+    findUserOptionById,
+    findAllUserOptions,
+    createNewUserOption,
+    updateUserOption,
+    deleteUserOption,
+} = require("../services/user_options.service");
 
-exports.getOptionById = async (req, res) => {
+exports.getUserOptionById = async (req, res) => {
     try {
         const id = req.params.id;
-        const option = await findOptionById(id);
+        const user_option = await findUserOptionById(id);
 
         res.status(200).json({
             success: true,
             message: "SUCCESS",
             error: null,
-            option,
+            user_option,
         });
     } catch (error) {
         logger.error(
             { err: error },
-            `[btcs][controllers/api/getOptionById] Error:`
+            `[btcs][controllers/api/getUserOptionById] Error:`
         );
         res.status(500).json({
             success: false,
@@ -32,21 +32,24 @@ exports.getOptionById = async (req, res) => {
     }
 };
 
-exports.getAllOptions = async (req, res) => {
-    logger.info(req.params, `[btcs][controllers/api/getAllOptions] Request:`);
+exports.getAllUserOptions = async (req, res) => {
+    logger.info(
+        req.params,
+        `[btcs][controllers/api/getAllUserOptions] Request:`
+    );
     try {
-        const options = await findAllOptions();
-        console.log("options: ", options);
+        const user_options = await findAllUserOptions();
+        console.log("user_options: ", user_options);
 
         res.status(200).json({
             success: true,
             message: "SUCCESS",
-            options,
+            user_options,
         });
     } catch (error) {
         logger.error(
             { err: error },
-            `[btcs][controllers/api/getAllOptions] Error:`
+            `[btcs][controllers/api/getAllUserOptions] Error:`
         );
         res.status(500).json({
             success: false,
@@ -57,8 +60,11 @@ exports.getAllOptions = async (req, res) => {
     }
 };
 
-exports.createNewOption = async (req, res) => {
-    logger.info(req.params, `[btcs][controllers/api/createNewOption] Request:`);
+exports.createNewUserOption = async (req, res) => {
+    logger.info(
+        req.params,
+        `[btcs][controllers/api/createNewUserOption] Request:`
+    );
     try {
         // TODO: Validate data request
 
@@ -70,7 +76,7 @@ exports.createNewOption = async (req, res) => {
             created_by: req.body.created_by,
         };
 
-        const option = await createNewOption(option_req);
+        const option = await createNewUserOption(option_req);
 
         res.status(200).json({
             success: true,
@@ -81,7 +87,7 @@ exports.createNewOption = async (req, res) => {
     } catch (error) {
         logger.error(
             { err: error },
-            `[btcs][controllers/api/createNewOption] Error:`
+            `[btcs][controllers/api/createNewUserOption] Error:`
         );
         res.status(500).json({
             success: false,
@@ -92,7 +98,7 @@ exports.createNewOption = async (req, res) => {
     }
 };
 
-exports.updateOption = async (req, res) => {
+exports.updateUserOption = async (req, res) => {
     try {
         // TODO: Validate data request
 
@@ -102,7 +108,7 @@ exports.updateOption = async (req, res) => {
             description: req.body.description,
             user_ids: req.body.criteria_ids,
         };
-        const option = await updateOption(option_req);
+        const option = await updateUserOption(option_req);
 
         if (option === null) {
             res.status(404).json({
@@ -122,7 +128,7 @@ exports.updateOption = async (req, res) => {
     } catch (error) {
         logger.error(
             { err: error },
-            `[btcs][controllers/api/updateOption] Error:`
+            `[btcs][controllers/api/updateUserOption] Error:`
         );
         res.status(500).json({
             success: false,
@@ -133,10 +139,10 @@ exports.updateOption = async (req, res) => {
     }
 };
 
-exports.deleteOption = async (req, res) => {
+exports.deleteUserOption = async (req, res) => {
     try {
         const id = req.params.id;
-        const option = await deleteOption(id);
+        const option = await deleteUserOption(id);
 
         res.status(200).json({
             success: true,
@@ -147,7 +153,7 @@ exports.deleteOption = async (req, res) => {
     } catch (error) {
         logger.error(
             { err: error },
-            `[btcs][controllers/api/deleteOption] Error:`
+            `[btcs][controllers/api/deleteUserOption] Error:`
         );
         res.status(500).json({
             success: false,
