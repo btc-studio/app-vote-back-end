@@ -139,7 +139,6 @@ exports.getResult = async (result_req) => {
         const poll_criterias = await PollCriterias.findAll({
             where: {
                 poll_id: result_req.poll_id,
-                user_id: result_req.user_id,
             },
             order: ["total_vote", "DESC"],
             limit: 3,

@@ -198,8 +198,6 @@ exports.getResult = async (req, res) => {
     try {
         const result_req = {
             poll_id: req.params.poll_id,
-            criteria_id: req.params.criteria_id,
-            user_id: req.params.user_id,
         };
         const result = await getResult(result_req);
 
