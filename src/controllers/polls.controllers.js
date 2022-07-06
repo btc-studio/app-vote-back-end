@@ -5,7 +5,7 @@ const {
     createNewPoll,
     updatePoll,
     deletePoll,
-    vote,
+    pollVote,
     getResult,
 } = require("../services/polls.service");
 
@@ -167,12 +167,12 @@ exports.deletePoll = async (req, res) => {
 
 exports.vote = async (req, res) => {
     try {
-        const vote_rep = {
+        const condtions = {
             poll_id: req.body.poll_id,
             criteria_id: req.body.criteria_id,
             user_id: req.body.user_id,
         };
-        const vote = await vote(vote_rep);
+        const vote = await pollVote(condtions);
 
         res.status(200).json({
             success: true,

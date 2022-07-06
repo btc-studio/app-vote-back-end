@@ -2,7 +2,7 @@ const { Polls } = require("../models/poll.model");
 const { PollCriterias } = require("../models/poll_criteria.model");
 const {
     createBulkPollCriterias,
-    vote,
+    internalVote,
 } = require("../services/poll_criterias.service");
 const { findUserOptionById } = require("../services/user_options.service");
 
@@ -119,10 +119,10 @@ internalFindPoll = async (id) => {
     return poll;
 };
 
-exports.vote = async (vote_req) => {
+exports.pollVote = async (conditons) => {
     const t = await sequelize.transaction();
     try {
-        const poll_criteria = await vote(vote_req);
+        const poll_criteria = await internalVote(conditons);
         return poll_criteria;
     } catch (error) {
         await t.rollback();
