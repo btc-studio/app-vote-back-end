@@ -1,6 +1,7 @@
 const { Polls } = require("../models/poll.model");
 const { PollOptions } = require("../models/poll_option.model");
 const { PollCriterias } = require("../models/poll_criteria.model");
+const { createNewPollCriteria } = require("../services/poll_criterias.service");
 const sequelize = require("../commons/database/database").sequelize;
 
 exports.findPollById = async (id) => {
@@ -39,7 +40,7 @@ exports.createNewPoll = async (poll_req) => {
 
          // insert to polls poll_criterias table
         poll_req.criteria_ids.forEach((criteria_id) => {
-            const poll_criteria = await PollCriterias.create({
+            createNewPollCriteria({
                 criteria_id: criteria_id,
                 option_id: poll_req.id,
                 user_id: null,
@@ -52,7 +53,6 @@ exports.createNewPoll = async (poll_req) => {
             option_id: poll_req.option_id,
             poll_id: poll_req.id,
         });
-        
         await t.commit();
         return poll;
     } catch (error) {
@@ -111,7 +111,6 @@ internalFindPoll = async (id) => {
     });
     return poll;
 };
-
 
 exports.vote = async (vote_req) => {
     const t = await sequelize.transaction();
