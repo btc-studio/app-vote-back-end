@@ -1,4 +1,5 @@
 const { Users } = require("../models/user.model");
+const sequelize = require("../commons/database/database").sequelize;
 
 exports.findUserById = async (id) => {
     try {
@@ -19,6 +20,7 @@ exports.findAllUsers = async () => {
 };
 
 exports.createNewUser = async (user_req) => {
+    const t = await sequelize.transaction();
     try {
         const user = await Users.create({
             id: user_req.id,
@@ -28,13 +30,16 @@ exports.createNewUser = async (user_req) => {
             created_at: new Date(),
             updated_at: new Date(),
         });
+        await t.commit();
         return user;
     } catch (error) {
+        await t.rollback();
         return error;
     }
 };
 
 exports.updateUser = async (user_req) => {
+    const t = await sequelize.transaction();
     try {
         const user = await internalFindUser(user_req.id);
         if (user === null) {
@@ -45,21 +50,26 @@ exports.updateUser = async (user_req) => {
             user.updated_at = new Date();
             await user.save();
         }
+        await t.rollback();
         return user;
     } catch (error) {
+        await t.rollback();
         return error;
     }
 };
 
 exports.deleteUser = async (id) => {
+    const t = await sequelize.transaction();
     try {
         const user = await Users.destroy({
             where: {
                 id: id,
             },
         });
+        await t.rollback();
         return user;
     } catch (error) {
+        await t.rollback();
         return error;
     }
 };
