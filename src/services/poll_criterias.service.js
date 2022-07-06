@@ -30,15 +30,11 @@ exports.createBulkPollCriterias = async (values) => {
     }
 };
 
-exports.vote = async (request) => {
+exports.internalVote = async (conditons) => {
     const t = await sequelize.transaction();
     try {
         const poll_criteria = await PollCriterias.findOne({
-            where: {
-                criteria_id: vote_req.criteria_id,
-                poll_id: vote_req.poll_id,
-                user_id: vote_req.user_id,
-            },
+            where: conditons,
         });
         // Add +1 Vote for user
         poll_criteria.total_vote += 1;
