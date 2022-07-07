@@ -10,13 +10,13 @@ const {
 exports.getOptionById = async (req, res) => {
     try {
         const id = req.params.id;
-        const option = await findOptionById(id);
+        const data = await findOptionById(id);
 
         res.status(200).json({
             success: true,
             message: "SUCCESS",
             error: null,
-            option,
+            data,
         });
     } catch (error) {
         logger.error(
@@ -41,7 +41,7 @@ exports.getAllOptions = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "SUCCESS",
-            options,
+            data,
         });
     } catch (error) {
         logger.error(

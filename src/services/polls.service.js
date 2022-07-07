@@ -5,13 +5,21 @@ const {
     internalVote,
 } = require("../services/poll_criterias.service");
 const { findUserOptionById } = require("../services/user_options.service");
+const {
+    findPollCriteriaByPollId,
+} = require("../services/poll_criterias.service");
 
 const sequelize = require("../commons/database/database").sequelize;
 
 exports.findPollById = async (id) => {
     try {
         const poll = await internalFindPoll(id);
-        return poll;
+        const poll_criterias = await findPollCriteriaByPollId(id);
+        let criteria_ids = poll_criterias.map((data) => data.criteria_id);
+        result = { poll: poll, criteria_ids: criteria_ids };
+        console.log(result);
+
+        return result;
     } catch (error) {
         return error;
     }
@@ -136,7 +144,7 @@ exports.getResult = async (result_req) => {
             where: {
                 poll_id: result_req.poll_id,
             },
-            order: ["total_vote", "DESC"],
+            order: [["total_vote", "DESC"]],
             limit: 3,
         });
         return poll_criterias;

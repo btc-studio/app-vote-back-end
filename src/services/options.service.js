@@ -1,12 +1,20 @@
 const { Options } = require("../models/option.model");
 const { UserOptions } = require("../models/user_option.model");
 const sequelize = require("../commons/database/database").sequelize;
-const { createBuldUserOptions } = require("../services/user_options.service");
+const {
+    createBuldUserOptions,
+    findUserOptionById,
+} = require("../services/user_options.service");
 
 exports.findOptionById = async (id) => {
     try {
         const option = await internalFindOption(id);
-        return option;
+        const users = await findUserOptionById(id);
+
+        let user_ids = users.map((data) => data.user_id);
+        const result = { option: option, user_ids: user_ids };
+
+        return result;
     } catch (error) {
         return error;
     }
