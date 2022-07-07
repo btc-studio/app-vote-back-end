@@ -46,3 +46,24 @@ exports.internalVote = async (conditons) => {
         return error;
     }
 };
+
+exports.findPollCriteriaByPollId = async (poll_id) => {
+    try {
+        const poll_criterias = await PollCriterias.findAll({
+            attributes: [
+                "criteria_id",
+                [
+                    sequelize.fn("sum", sequelize.col("total_vote")),
+                    "total_vote",
+                ],
+            ],
+            where: {
+                poll_id: poll_id,
+            },
+            group: ["criteria_id"],
+        });
+        return poll_criterias;
+    } catch (error) {
+        return error;
+    }
+};

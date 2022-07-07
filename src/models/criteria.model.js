@@ -27,7 +27,7 @@ Criterias.init(
 
         updated_at: {
             type: DataTypes.TIME,
-            allowNull: false,
+            allowNull: true,
         },
     },
     {

@@ -12,13 +12,13 @@ const {
 exports.getPollById = async (req, res) => {
     try {
         const id = req.params.id;
-        const poll = await findPollById(id);
+        const data = await findPollById(id);
 
         res.status(200).json({
             success: true,
             message: "SUCCESS",
             error: null,
-            poll,
+            data,
         });
     } catch (error) {
         logger.error(
@@ -37,13 +37,13 @@ exports.getPollById = async (req, res) => {
 exports.getAllPolls = async (req, res) => {
     logger.info(req.params, `[btcs][controllers/api/getAllPolls] Request:`);
     try {
-        const polls = await findAllPolls();
-        console.log("polls: ", polls);
+        const data = await findAllPolls();
+        console.log("polls: ", data);
 
         res.status(200).json({
             success: true,
             message: "SUCCESS",
-            polls,
+            data,
         });
     } catch (error) {
         logger.error(
@@ -197,7 +197,7 @@ exports.vote = async (req, res) => {
 exports.getResult = async (req, res) => {
     try {
         const result_req = {
-            poll_id: req.params.poll_id,
+            poll_id: req.params.id,
         };
         const result = await getResult(result_req);
 
