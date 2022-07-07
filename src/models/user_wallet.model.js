@@ -23,7 +23,7 @@ UserWallets.init(
     },
     {
         sequelize,
-        tableName: TABLE_NAME.users,
+        tableName: TABLE_NAME.user_wallets,
 
         // If don't want createdAt, updatedAt
         createdAt: false,
