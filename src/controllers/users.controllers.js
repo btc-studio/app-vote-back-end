@@ -66,6 +66,8 @@ exports.createNewUser = async (req, res) => {
             name: req.body.name,
             email: req.body.email,
             role: req.body.role,
+            blockchain_type: req.body.blockchain_type,
+            wallet_address: req.body.wallet_address,
         };
 
         const user = await createNewUser(user_req);

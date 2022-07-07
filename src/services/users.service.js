@@ -1,4 +1,5 @@
 const { Users } = require("../models/user.model");
+const { UserWallets } = require("../models/user_wallet.model");
 const sequelize = require("../commons/database/database").sequelize;
 
 exports.findUserById = async (id) => {
@@ -30,6 +31,15 @@ exports.createNewUser = async (user_req) => {
             created_at: new Date(),
             updated_at: new Date(),
         });
+
+        const user_wallet = await UserWallets.create({
+            user_id: user_req.id,
+            blockchain_type: user_req.blockchain_type,
+            wallet_address: user_req.wallet_address,
+        });
+
+        //const result = { user: user, user_wallet: user_wallet };
+
         await t.commit();
         return user;
     } catch (error) {
