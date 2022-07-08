@@ -112,9 +112,9 @@ exports.updatePoll = async (req, res) => {
         const poll = await updatePoll(poll_req);
 
         if (poll === null) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
-                message: "USER_NOT_FOUND_ERROR",
+                message: "POLL_NOT_FOUND_ERROR",
                 error: 404,
                 data: null,
             });

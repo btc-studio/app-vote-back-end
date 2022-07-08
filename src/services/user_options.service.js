@@ -1,5 +1,6 @@
 const { UserOptions } = require("../models/user_option.model");
 const sequelize = require("../commons/database/database").sequelize;
+const { createDataUserOptions } = require("../helpers/user_options.hepler");
 
 exports.findUserOptionById = async (id) => {
     try {
@@ -35,7 +36,7 @@ exports.createNewUserOption = async (data) => {
     }
 };
 
-exports.createBuldUserOptions = async (values) => {
+exports.createBulkUserOptions = async (values) => {
     // First, we start a transaction and save it into a variable
     const t = await sequelize.transaction();
     try {
@@ -49,13 +50,32 @@ exports.createBuldUserOptions = async (values) => {
     }
 };
 
-exports.deleteUserOption = async (id) => {
+deleteUserOption = async (id) => {
+    const t = await sequelize.transaction();
     try {
-        const option = await UserOptions.destroy({
+        /// delete option with option_id
+        await UserOptions.destroy({
             where: {
-                user_id: id,
+                option_id: id,
             },
         });
+        return option;
+    } catch (error) {
+        await t.rollback();
+        return error;
+    }
+};
+
+exports.updateUserOptions = async (option_id, user_ids) => {
+    const t = await sequelize.transaction();
+    try {
+        /// delete option with option_id
+        await deleteUserOption(option_id);
+
+        // insert to user options table
+        const datas = createDataUserOptions(option_id, user_ids);
+        const option = await UserOptions.bulkCreate(datas);
+        await t.commit();
         return option;
     } catch (error) {
         return error;

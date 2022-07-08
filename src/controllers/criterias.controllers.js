@@ -104,9 +104,9 @@ exports.updateCriteria = async (req, res) => {
         const criteria = await updateCriteria(criteria_req);
 
         if (criteria === null) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
-                message: "USER_NOT_FOUND_ERROR",
+                message: "CRITERIA_NOT_FOUND_ERROR",
                 error: 404,
                 data: null,
             });

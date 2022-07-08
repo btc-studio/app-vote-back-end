@@ -105,7 +105,7 @@ exports.updateUser = async (req, res) => {
         const user = await updateUser(user_req);
 
         if (user === null) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
                 message: "USER_NOT_FOUND_ERROR",
                 error: 404,
