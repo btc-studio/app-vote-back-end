@@ -2,9 +2,11 @@ const { Options } = require("../models/option.model");
 const { UserOptions } = require("../models/user_option.model");
 const sequelize = require("../commons/database/database").sequelize;
 const {
-    createBuldUserOptions,
+    createBulkUserOptions,
     findUserOptionById,
+    updateUserOptions,
 } = require("../services/user_options.service");
+const { createDataUserOptions } = require("../helpers/user_options.hepler");
 
 exports.findOptionById = async (id) => {
     try {
@@ -43,19 +45,15 @@ exports.createNewOption = async (option_req) => {
             updated_at: new Date(),
         });
 
-        const values = new Array();
         // insert to user options table
-        option_req.user_ids.forEach((user_id) => {
-            const json = new Object();
-            json.user_id = user_id;
-            json.option_id = option_req.id;
-
-            values.push(json);
-        });
-        await createBuldUserOptions(values);
+        const datas = createDataUserOptions(option_req.id, option_req.user_ids);
+        console.log("datas: ", datas);
+        const users = await createBulkUserOptions(datas);
+        const user_ids = users.map((data) => data.user_id);
+        const result = { option: option, user_ids: user_ids };
 
         await t.commit();
-        return option;
+        return result;
     } catch (error) {
         await t.rollback();
         return error;
@@ -83,10 +81,18 @@ exports.updateOption = async (option_req) => {
             option.updated_at = new Date();
             await option.save();
         }
-        await t.commit();
-        return option;
+        const users = await updateUserOptions(
+            option_req.id,
+            option_req.user_ids
+        );
+
+        const user_ids = users.map((data) => data.user_id);
+        const result = { option: option, user_ids: user_ids };
+
+        await await t.commit();
+        return result;
     } catch (error) {
-        await t.commit();
+        await t.rollback();
         return error;
     }
 };

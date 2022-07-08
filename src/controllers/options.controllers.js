@@ -35,8 +35,7 @@ exports.getOptionById = async (req, res) => {
 exports.getAllOptions = async (req, res) => {
     logger.info(req.params, `[btcs][controllers/api/getAllOptions] Request:`);
     try {
-        const options = await findAllOptions();
-        console.log("options: ", options);
+        const data = await findAllOptions();
 
         res.status(200).json({
             success: true,
@@ -97,17 +96,18 @@ exports.updateOption = async (req, res) => {
         // TODO: Validate data request
 
         const option_req = {
-            id: req.body.id,
+            id: req.params.id,
             title: req.body.title,
             description: req.body.description,
-            user_ids: req.body.criteria_ids,
+            user_ids: req.body.user_ids,
         };
         const option = await updateOption(option_req);
+        console.log("option: ", option);
 
         if (option === null) {
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
-                message: "USER_NOT_FOUND_ERROR",
+                message: "OPTIONS_NOT_FOUND_ERROR",
                 error: 404,
                 data: null,
             });
@@ -117,7 +117,7 @@ exports.updateOption = async (req, res) => {
             success: true,
             message: "SUCCESS",
             error: null,
-            option,
+            data: option,
         });
     } catch (error) {
         logger.error(
