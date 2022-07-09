@@ -1,12 +1,16 @@
-exports.createDataPolls = (poll_id, criteria_ids) => {
-    const datas = new Array();
+exports.createDataPolls = (poll_id, criteria_ids, user_options) => {
+    const data = [];
     // insert to user options table
-    user_ids.forEach((user_id) => {
-        const json = new Object();
-        json.user_id = user_id;
-        json.option_id = option_id;
+    criteria_ids.forEach((criteria_id) => {
+        user_options.forEach((user_option) => {
+            const json = {};
+            json.criteria_id = criteria_id;
+            json.poll_id = poll_id;
+            json.user_id = user_option.user_id;
+            json.total_vote = 0;
 
-        datas.push(json);
+            data.push(json);
+        });
     });
-    return datas;
+    return data;
 };

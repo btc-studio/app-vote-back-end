@@ -19,37 +19,35 @@ exports.createNewPollCriteria = async (request) => {
 };
 
 exports.createBulkPollCriterias = async (values) => {
-    const t = await sequelize.transaction();
     try {
-        const poll_criterias = await PollCriterias.bulkCreate(values);
-        await t.commit();
-        return poll_criterias;
+        return await PollCriterias.bulkCreate(values);
     } catch (error) {
-        await t.rollback();
         return error;
     }
 };
 
-exports.internalVote = async (conditons) => {
-    const t = await sequelize.transaction();
+exports.internalVote = async (conditions) => {
     try {
         const poll_criteria = await PollCriterias.findOne({
-            where: conditons,
+            where: conditions,
         });
+
+        if(poll_criteria === null) {
+            return null;
+        }
+
         // Add +1 Vote for user
         poll_criteria.total_vote += 1;
         await poll_criteria.save();
-        await t.commit();
         return poll_criteria;
     } catch (error) {
-        await t.rollback();
         return error;
     }
 };
 
 exports.findPollCriteriaByPollId = async (poll_id) => {
     try {
-        const poll_criterias = await PollCriterias.findAll({
+        return await PollCriterias.findAll({
             attributes: [
                 "criteria_id",
                 [
@@ -62,7 +60,6 @@ exports.findPollCriteriaByPollId = async (poll_id) => {
             },
             group: ["criteria_id"],
         });
-        return poll_criterias;
     } catch (error) {
         return error;
     }

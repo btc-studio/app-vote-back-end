@@ -8,6 +8,7 @@ const { findUserOptionById } = require("../services/user_options.service");
 const {
     findPollCriteriaByPollId,
 } = require("../services/poll_criterias.service");
+const createDataPolls = require("../helpers/polls.helper").createDataPolls;
 
 const sequelize = require("../commons/database/database").sequelize;
 
@@ -16,9 +17,7 @@ exports.findPollById = async (id) => {
         const poll = await internalFindPoll(id);
         const poll_criterias = await findPollCriteriaByPollId(id);
         const criteria_ids = poll_criterias.map((data) => data.criteria_id);
-        const result = { poll: poll, criteria_ids: criteria_ids };
-
-        return result;
+        return {poll: poll, criteria_ids: criteria_ids};
     } catch (error) {
         return error;
     }
@@ -26,8 +25,7 @@ exports.findPollById = async (id) => {
 
 exports.findAllPolls = async () => {
     try {
-        const polls = await Polls.findAll();
-        return polls;
+        return await Polls.findAll();
     } catch (error) {
         return error;
     }
@@ -52,21 +50,13 @@ exports.createNewPoll = async (poll_req) => {
         });
 
         const user_options = await findUserOptionById(poll_req.option_id);
-        const values = new Array();
-        // Insert to polls poll_criterias table
-        poll_req.criteria_ids.forEach((criteria_id) => {
-            user_options.forEach((user_option) => {
-                const json = new Object();
-                json.criteria_id = criteria_id;
-                json.poll_id = poll_req.id;
-                json.user_id = user_option.user_id;
-                json.total_vote = 0;
-
-                values.push(json);
-            });
-        });
-        await createBulkPollCriterias(values);
-
+        const values = createDataPolls(poll_req.id,poll_req.criteria_ids, user_options);
+        const poll_criterias = await createBulkPollCriterias(values);
+        
+        if (poll_criterias === null) {
+            await t.rollback();
+            return null;
+        }
         await t.commit();
         return poll;
     } catch (error) {
@@ -80,6 +70,7 @@ exports.updatePoll = async (poll_req) => {
     try {
         const poll = await internalFindPoll(poll_req.id);
         if (poll === null) {
+            return null;
         } else {
             poll.title = poll_req.title == null ? poll.title : poll_req.title;
             poll.description =
@@ -118,19 +109,23 @@ exports.deletePoll = async (id) => {
 };
 
 internalFindPoll = async (id) => {
-    const poll = await Polls.findOne({
+    return await Polls.findOne({
         where: {
             id: id,
         },
     });
-    return poll;
 };
 
-exports.pollVote = async (conditons) => {
+exports.pollVote = async (conditions) => {
     const t = await sequelize.transaction();
     try {
-        const poll_criteria = await internalVote(conditons);
-        return poll_criteria;
+        const votes = await internalVote(conditions);
+        if(votes === null) {
+            await t.rollback();
+            return votes;
+        }
+        await t.commit();
+        return votes;
     } catch (error) {
         await t.rollback();
         return error;
@@ -139,14 +134,13 @@ exports.pollVote = async (conditons) => {
 
 exports.getResult = async (result_req) => {
     try {
-        const poll_criterias = await PollCriterias.findAll({
+        return await PollCriterias.findAll({
             where: {
                 poll_id: result_req.poll_id,
             },
             order: [["total_vote", "DESC"]],
             limit: 3,
         });
-        return poll_criterias;
     } catch (error) {
         return error;
     }
